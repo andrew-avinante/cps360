@@ -111,20 +111,34 @@ int ut_join(int threadId, int *status)
     // busy-wait (calling ut_yield in a loop) while the status of thread <threadId> is THREAD_ALIVE
     while(thread[threadId].status == 1)
     {
-
+        ut_yield();
     }
     
-    // If the thread status is THREAD_ZOMBIE, 
-    //    Change its status to THREAD_UNUSED
-    //    Set *status to its exit code, and return 0
-    // Otherwise, the thread was joined by someone else already; return -1    
-    
+    // If the thread status is THREAD_ZOMBIE,
+    if(thread[threadId].status == 2)
+    {
+        //    Change its status to THREAD_UNUSED
+        thread[threadId].status = 0;
+
+        //    Set *status to its exit code, and return 0
+        *status = thread[threadId].exitValue;
+        return 0;
+    } 
+    else // Otherwise, the thread was joined by someone else already; return -1
+    {
+        return -1;
+    }
 }
 
 // Terminate execution of current thread
 void ut_finish(int result)
 {
     // record <result> in current thread's exitValue field
+    thread[curThread].exitValue = result;
+
     // set current thread's status to THREAD_ZOMBIE
+    thread[curThread].status = 2;
+
     // pick another thread to run
+    ut_yield();
 }
