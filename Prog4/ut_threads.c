@@ -1,7 +1,8 @@
 
 #include <assert.h>
 #include <ucontext.h>
-
+#include <stdlib.h>
+#include <stdio.h>
 #include "ut_threads.h"
 
 // The following are valid thread statuses:
@@ -62,10 +63,11 @@ int ut_create(void (* entry)(int), int arg)
     
     // Otherwise, set the status of the slot to THREAD_ALIVE
     thread[i].status = 1;
-
+    printf("HI\n");
     // and initialize its context TODO
-    
-    
+    thread[i].context.uc_stack.ss_sp = malloc(thread[i].context.uc_stack.ss_size);
+    makecontext(&thread[i].context, entry, arg);
+    printf("BYE\n");
     // Return the thread Id
     return i;
 }
@@ -74,10 +76,10 @@ int ut_create(void (* entry)(int), int arg)
 void ut_yield()
 {
     int newThread = -1;
-    int i = curThread;
+    int i = curThread + 1;
 
   // find a thread that can run, using round robin scheduling; pick this one if no other thread can run
-    while(newThread = -1)
+    while(newThread = -1 && i != curThread)
     {
         ++i % MAX_THREADS;
         if(thread[i].status == 1)
@@ -85,14 +87,17 @@ void ut_yield()
             newThread == i;
         }
     }
-  
-  // if another thread can run, switch to it
-    curThread = newThread;
-  
-  // if no threads are ALIVE, exit the program
-    
-  // otherwise, return to continue running this thread
-  
+
+    // if another thread can run, switch to it && otherwise, return to continue running this thread
+    if(newThread != -1)
+    {
+        curThread = newThread;
+        swapcontext(&thread[curThread].context, &thread[newThread].context);
+    }
+    else   // if no threads are ALIVE, exit the program
+    {
+        
+    }
 }
 
 // returns thread ID of current thread
