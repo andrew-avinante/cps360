@@ -65,7 +65,7 @@ int ut_create(void (* entry)(int), int arg)
 
     // and initialize its context TODO
     getcontext(&thread[i].context);
-    makecontext(&thread[i].context, (void *)&entry, 1, arg);
+    makecontext(&thread[i].context, entry, 1, arg);
 
     // Return the thread Id
     return i;
@@ -76,28 +76,27 @@ void ut_yield()
 {
     int newThread = -1;
     int i = (curThread + 1) % 10;
+    int oldThread = curThread;
 
   // find a thread that can run, using round robin scheduling; pick this one if no other thread can run
     while(newThread == -1 && i != curThread)
     {
         //printf("%d\n", thread[i].status);
-        i = ++i % MAX_THREADS;
         if(thread[i].status == 1)
         {
             newThread = i;
         }
+        i = ++i % MAX_THREADS;
     }
     // if another thread can run, switch to it && otherwise, return to continue running this thread
     if(newThread != -1)
     {
-       
-         printf("%d %d\n", curThread, newThread);
-        swapcontext(&thread[curThread].context, &thread[newThread].context);
-         printf("%d %d\n", curThread, newThread);
+                        curThread = newThread;
+        swapcontext(&thread[oldThread].context, &thread[newThread].context);
     }
     else   // if no threads are ALIVE, exit the program
     {
-  
+        exit(1);
     }
 }
 
