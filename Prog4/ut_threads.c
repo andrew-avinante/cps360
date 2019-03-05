@@ -65,7 +65,7 @@ int ut_create(void (* entry)(int), int arg)
 
     // and initialize its context TODO
     getcontext(&thread[i].context);
-    makecontext(&thread[i].context, entry, 1, arg);
+    makecontext(&thread[i].context, (void *)entry, 1, arg);
 
     // Return the thread Id
     return i;
