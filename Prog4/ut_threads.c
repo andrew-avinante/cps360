@@ -91,7 +91,7 @@ void ut_yield()
     // if another thread can run, switch to it && otherwise, return to continue running this thread
     if(newThread != -1)
     {
-                        curThread = newThread;
+        curThread = newThread;
         swapcontext(&thread[oldThread].context, &thread[newThread].context);
     }
     else   // if no threads are ALIVE, exit the program
