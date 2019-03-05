@@ -63,7 +63,7 @@ int ut_create(void (* entry)(int), int arg)
     // Otherwise, set the status of the slot to THREAD_ALIVE
     thread[i].status = 1;
 
-    // and initialize its context TODO
+    // and initialize its context
     getcontext(&thread[i].context);
     makecontext(&thread[i].context, (void *)entry, 1, arg);
 
