@@ -32,7 +32,6 @@ int curThread; // the index of the currently executing thread
 // Do needed initialization work, including setting up stack pointers for all of the threads
 int ut_init(char *stackbuf) {
   int i;
-    
   // setup stack pointers
   for (i = 0 ; i < MAX_THREADS; ++i ) {
     thread[i].context.uc_stack.ss_sp = stackbuf + i * STACK_SIZE;
@@ -63,11 +62,11 @@ int ut_create(void (* entry)(int), int arg)
     
     // Otherwise, set the status of the slot to THREAD_ALIVE
     thread[i].status = 1;
-    printf("HI\n");
+
     // and initialize its context TODO
-    thread[i].context.uc_stack.ss_sp = malloc(thread[i].context.uc_stack.ss_size);
-    makecontext(&thread[i].context, entry, arg);
-    printf("BYE\n");
+    getcontext(&thread[i].context);
+    makecontext(&thread[i].context, (void *)&entry, 1, arg);
+
     // Return the thread Id
     return i;
 }
@@ -76,27 +75,29 @@ int ut_create(void (* entry)(int), int arg)
 void ut_yield()
 {
     int newThread = -1;
-    int i = curThread + 1;
+    int i = (curThread + 1) % 10;
 
   // find a thread that can run, using round robin scheduling; pick this one if no other thread can run
-    while(newThread = -1 && i != curThread)
+    while(newThread == -1 && i != curThread)
     {
-        ++i % MAX_THREADS;
+        //printf("%d\n", thread[i].status);
+        i = ++i % MAX_THREADS;
         if(thread[i].status == 1)
         {
-            newThread == i;
+            newThread = i;
         }
     }
-
     // if another thread can run, switch to it && otherwise, return to continue running this thread
     if(newThread != -1)
     {
-        curThread = newThread;
+       
+         printf("%d %d\n", curThread, newThread);
         swapcontext(&thread[curThread].context, &thread[newThread].context);
+         printf("%d %d\n", curThread, newThread);
     }
     else   // if no threads are ALIVE, exit the program
     {
-        
+  
     }
 }
 
