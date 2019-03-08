@@ -3,7 +3,11 @@
 #include <ucontext.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "ut_threads.h"
+
+#include <signal.h>
+#include <unistd.h>
 
 // The following are valid thread statuses:
 
@@ -18,14 +22,16 @@ typedef struct {
     ucontext_t context;
     int status;   // one of THREAD_UNUSED, THREAD_ALIVE, THREAD_ZOMBIE
     int exitValue; // thread's return value
+    int priority;  // thread's priority
 } uthread_t;
-
 
 /*
 * Define the thread table
 * Thread ID's are indexes into this table
 */
 uthread_t thread[MAX_THREADS]; // the thread table
+uthread_t pq[MAX_THREADS][MAX_THREADS];
+ucontext_t rtrn;
 
 int curThread; // the index of the currently executing thread
 
@@ -37,6 +43,12 @@ int ut_init(char *stackbuf) {
     thread[i].context.uc_stack.ss_sp = stackbuf + i * STACK_SIZE;
     thread[i].context.uc_stack.ss_size = STACK_SIZE;
   }
+
+    char returnStack[STACK_SIZE * MAX_THREADS];
+    rtrn.uc_stack.ss_sp = returnStack;
+    rtrn.uc_stack.ss_size = STACK_SIZE;
+    getcontext(&rtrn);
+    makecontext(&rtrn, ut_finish, 1, -1);
   
   // initialize main thread
   thread[0].status = THREAD_ALIVE;
@@ -47,7 +59,7 @@ int ut_init(char *stackbuf) {
 // Creates a thread with entry point set to <entry>
 // <arg> is the argument that will be passed to <entry> in the new thread
 // Returns threadID on success, or -1 on failure (thread table full)
-int ut_create(void (* entry)(int), int arg)
+int ut_create(void (* entry)(int), int arg, int priority)
 {
     int i;
 
@@ -63,8 +75,19 @@ int ut_create(void (* entry)(int), int arg)
     // Otherwise, set the status of the slot to THREAD_ALIVE
     thread[i].status = 1;
 
+    for(int j = 0; j < MAX_THREADS; j++)
+    {
+        for(int k = 0; k < MAX_THREADS; k++)
+        {
+            printf("%d\n", k);
+        }
+    }
+
     // and initialize its context
     getcontext(&thread[i].context);
+    thread[i].context.uc_link = &rtrn;
+    thread[i].priority = (priority - 1) % MAX_THREADS;
+    pq[thread[i].priority][i] = thread[i];
     makecontext(&thread[i].context, (void *)entry, 1, arg);
 
     // Return the thread Id
@@ -75,12 +98,16 @@ int ut_create(void (* entry)(int), int arg)
 void ut_yield()
 {
     int newThread = -1;
-    int i = (curThread + 1) % 10;
+    int i = (curThread + 1) % MAX_THREADS;
     int oldThread = curThread;
 
   // find a thread that can run, using round robin scheduling; pick this one if no other thread can run
     while(newThread == -1 && i != curThread)
     {
+        for(int j = MAX_THREADS - 1; j > -1; j--)
+        {
+
+        }
         //printf("%d\n", thread[i].status);
         if(thread[i].status == 1)
         {
@@ -93,9 +120,17 @@ void ut_yield()
     {
         curThread = newThread;
         swapcontext(&thread[oldThread].context, &thread[newThread].context);
+        // printf("%d\n", ut_getid());
+        // printf("START\n");
+        // for(long int j = (long int)thread[curThread].context.uc_stack.ss_sp; j <  (long int)thread[curThread].context.uc_stack.ss_sp+ STACK_SIZE; j+=4)
+        // {
+        // printf("PRINTING STACK %ld\n", *(long int*)j);
+        // }
+        // printf("END\n");
     }
     else   // if no threads are ALIVE, exit the program
     {
+        printf("IN YIELD\n");
         exit(1);
     }
 }
@@ -118,7 +153,12 @@ int ut_join(int threadId, int *status)
     {
         ut_yield();
     }
-    
+    //  printf("START\n");
+    //     for(long int j = (long int)thread[1].context.uc_stack.ss_sp; j <  (long int)thread[1].context.uc_stack.ss_sp+ STACK_SIZE; j+=4)
+    //     {
+    //     printf("PRINTING STACK %ld\n", *(long int*)j);
+    //     }
+    //     printf("END\n");
     // If the thread status is THREAD_ZOMBIE,
     if(thread[threadId].status == 2)
     {
@@ -138,11 +178,19 @@ int ut_join(int threadId, int *status)
 // Terminate execution of current thread
 void ut_finish(int result)
 {
-    // record <result> in current thread's exitValue field
-    thread[curThread].exitValue = result;
+    if(result == -1)
+    {
+         thread[curThread].exitValue =*(long int*)(thread[curThread].context.uc_stack.ss_sp+ STACK_SIZE - (13 * 4));
+           thread[curThread].status = 2;
+    }
+    else
+    {
+        // record <result> in current thread's exitValue field
+        thread[curThread].exitValue = result;
 
-    // set current thread's status to THREAD_ZOMBIE
-    thread[curThread].status = 2;
+        // set current thread's status to THREAD_ZOMBIE
+        thread[curThread].status = 2;
+    }
 
     // pick another thread to run
     ut_yield();

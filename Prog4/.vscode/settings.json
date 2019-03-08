@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "ut_threads.h": "c",
+        "assert.h": "c",
+        "ucontext.h": "c"
+    }
+}
