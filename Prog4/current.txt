@@ -27,9 +27,9 @@ typedef struct {
 } uthread_t;
 
 typedef struct {
-    int id[MAX_THREADS];    // array of thread ids
-    int size;   // size of each queue
-    int i;  // itteration counter
+    int id[MAX_THREADS];
+    int size;
+    int i;
 } pq_t;
 
 /*
@@ -37,21 +37,22 @@ typedef struct {
 * Thread ID's are indexes into this table
 */
 uthread_t thread[MAX_THREADS]; // the thread table
-pq_t pq[MAX_THREADS];   // the priority queue
+pq_t pq[MAX_THREADS];
 
 int curThread; // the index of the currently executing thread
-struct itimerval time;  // the timer for preemptive scheduling
+struct itimerval time; 
 
 // Do needed initialization work, including setting up stack pointers for all of the threads
 int ut_init(char *stackbuf) {
-    int i;
-    // setup stack pointers
-    for (i = 0 ; i < MAX_THREADS; ++i ) {
-        thread[i].context.uc_stack.ss_sp = stackbuf + i * STACK_SIZE;
-        thread[i].context.uc_stack.ss_size = STACK_SIZE;
-    }
+  int i;
+  // setup stack pointers
+  for (i = 0 ; i < MAX_THREADS; ++i ) {
+    thread[i].context.uc_stack.ss_sp = stackbuf + i * STACK_SIZE;
+    thread[i].context.uc_stack.ss_size = STACK_SIZE;
+  }
 
-    // set all slots in queue to -1
+    char returnStack[STACK_SIZE * MAX_THREADS];
+
     for(int j = 0; j < MAX_THREADS; j++)
     {
         for(int k = 0; k < MAX_THREADS; k++)
@@ -62,24 +63,24 @@ int ut_init(char *stackbuf) {
         pq[j].i = 0;
     }
 
-    // set up timer
-    time.it_interval.tv_sec = 0; 
-    time.it_interval.tv_usec = 100000; 
-    time.it_value.tv_sec = 0; 
-    time.it_value.tv_usec = 100000; 
 
-    signal(SIGVTALRM, ut_yield); 
+time.it_interval.tv_sec = 0; 
+time.it_interval.tv_usec = 100000; 
+time.it_value.tv_sec = 0; 
+time.it_value.tv_usec = 100000; 
 
-    setitimer(ITIMER_VIRTUAL, &time, NULL);
+signal(SIGVTALRM, ut_yield); 
 
-    // initialize main thread
-    getcontext(&thread[0].context);
-    thread[0].priority = (1 - 1) % MAX_THREADS;     // add thread to queue
+setitimer(ITIMER_VIRTUAL, &time, NULL);
+
+  // initialize main thread
+  getcontext(&thread[0].context);
+   thread[0].priority = (10 - 1) % MAX_THREADS;
     pq[thread[0].priority].id[pq[thread[0].priority].size] = 0;
     pq[thread[0].priority].size++;
-    thread[0].status = THREAD_ALIVE;
-    curThread = 0;
-    return 0;
+  thread[0].status = THREAD_ALIVE;
+  curThread = 0;
+  return 0;
 }
 
 // Creates a thread with entry point set to <entry>
@@ -91,19 +92,19 @@ int ut_create(void (* entry)(int), int arg, int priority)
 
     // Find a slot in thread table whose status is THREAD_UNUSED
     for (i = 0 ; i < MAX_THREADS; ++i ) {
-        if(thread[i].status != THREAD_UNUSED){ continue; }
+        if(thread[i].status != 0){ continue; }
         else { break; }
     }
 
     // Return -1 if all slots are in use
-    if(i == MAX_THREADS){ return -1; }
+    if(i + 1 == MAX_THREADS){ return -1; }
     
     // Otherwise, set the status of the slot to THREAD_ALIVE
-    thread[i].status = THREAD_ALIVE;
+    thread[i].status = 1;
 
     // and initialize its context
     getcontext(&thread[i].context);
-    thread[i].priority = priority - 1 < 10 ? priority - 1 : 10;
+    thread[i].priority = (priority - 1) % MAX_THREADS;
     pq[thread[i].priority].id[pq[thread[i].priority].size] = i;
     pq[thread[i].priority].size++;
     makecontext(&thread[i].context, (void *)ut_return, 2, (void *)entry, arg);
@@ -116,47 +117,48 @@ int ut_create(void (* entry)(int), int arg, int priority)
 void ut_yield()
 {
     struct itimerval oldTime = {0}; 
-    setitimer(ITIMER_VIRTUAL, &oldTime, &time); // pause timer because swapcontext is DANGEEROUS with SIGVTALRM
+    setitimer(ITIMER_VIRTUAL, &oldTime, &time);
     int newThread = -1;
     int oldThread = curThread;
     int itt = 0;
-    // find a thread that can run, using round robin scheduling; pick this one if no other thread can run
-    while(newThread == -1)
+  // find a thread that can run, using round robin scheduling; pick this one if no other thread can run
+  while(newThread == -1)
+  {
+    for(int i = MAX_THREADS - 1; i > -1 && newThread == -1; i--)
     {
-        for(int i = MAX_THREADS - 1; i > -1 && newThread == -1; i--)    // itterate over priority levels
+        int j = pq[i].i;
+        for(int k = 0; k < pq[i].size && newThread == -1; k++)
         {
-            int j = pq[i].i;    // get point to continue itterating
-            for(int k = 0; k < pq[i].size && newThread == -1; k++)      // itterate over individual priorities
+            if(thread[pq[i].id[j]].status == 1)
             {
-                if(thread[pq[i].id[j]].status == THREAD_ALIVE)     // check if thread is THREAD_ALIVE
-                {
-                    newThread = pq[i].id[j];
-                    pq[i].i = j + 1 == pq[i].size ? 0 : j + 1;
-                }
-                j = ++j % pq[i].size;
+                newThread = pq[i].id[j];
+                pq[i].i = j + 1 == pq[i].size ? 0 : j + 1;
             }
-            if(newThread == -1)
-            {
-                pq[i].i = pq[i].i + 1 == pq[i].size ? 0 : pq[i].i + 1;
-            }
+            j = ++j % pq[i].size;
         }
-        if(itt > 2)
+        if(newThread == -1)
         {
-            newThread = 0;
+            pq[i].i = pq[i].i + 1 == pq[i].size ? 0 : pq[i].i + 1;
         }
-        itt++;
     }
-
+    if(itt > 2)
+    {
+        newThread = 0;
+    }
+    itt++;
+  }
     // if another thread can run, switch to it && otherwise, return to continue running this thread
     if(newThread != -1)
     {
         curThread = newThread;
+        printf("%d %d\n", oldThread, newThread);
         swapcontext(&thread[oldThread].context, &thread[newThread].context);
 
     }
     else   // if no threads are ALIVE, exit the program
     {
-        exit(-1);
+        printf("IN YIELD\n");
+        exit(1);
     }
     setitimer(ITIMER_VIRTUAL, &time, NULL);
 }
@@ -164,7 +166,7 @@ void ut_yield()
 // returns thread ID of current thread
 int ut_getid()
 {
-    return curThread;  
+  return curThread;  
 }
 
 // Wait for the thread identified by <threadId> to exit, returning its return value in status. 
@@ -172,19 +174,24 @@ int ut_getid()
 int ut_join(int threadId, int *status) 
 {
     // return -1 if threadId is illegal (out of range) or if its status is THREAD_UNUSED
-    if(threadId >= MAX_THREADS || threadId < 0 || thread[threadId].status == THREAD_UNUSED) { return -1; }
+    if(threadId >= MAX_THREADS || thread[threadId].status == 0) { return -1; }
     
     // busy-wait (calling ut_yield in a loop) while the status of thread <threadId> is THREAD_ALIVE
-    while(thread[threadId].status == THREAD_ALIVE)
+    while(thread[threadId].status == 1)
     {
         ut_yield();
     }
-   
+    //  printf("START\n");
+    //     for(long int j = (long int)thread[1].context.uc_stack.ss_sp; j <  (long int)thread[1].context.uc_stack.ss_sp+ STACK_SIZE; j+=4)
+    //     {
+    //     printf("PRINTING STACK %ld\n", *(long int*)j);
+    //     }
+    //     printf("END\n");
     // If the thread status is THREAD_ZOMBIE,
-    if(thread[threadId].status == THREAD_ZOMBIE)
+    if(thread[threadId].status == 2)
     {
         //    Change its status to THREAD_UNUSED
-        thread[threadId].status = THREAD_UNUSED;
+        thread[threadId].status = 0;
 
         //    Set *status to its exit code, and return 0
         *status = thread[threadId].exitValue;
@@ -203,13 +210,12 @@ void ut_finish(int result)
     thread[curThread].exitValue = result;
 
     // set current thread's status to THREAD_ZOMBIE
-    thread[curThread].status = THREAD_ZOMBIE;
+    thread[curThread].status = 2;
 
     // pick another thread to run
     ut_yield();
 }
 
-// Wrapper function that calls ut_finish even if user does not
 void ut_return(int (* entry)(int), int arg)
 {
     int rtrn = (*entry)(arg);

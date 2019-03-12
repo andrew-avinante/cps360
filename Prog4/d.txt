@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <signal.h>
+#include <sys/time.h>
+
+
+
+void signal_handler(){
+  print();
+}
+
+
+int main(){
+
+  struct itimerval time;
+
+  time.it_interval.tv_sec = 0;
+  time.it_interval.tv_usec = 100000;
+  time.it_value.tv_sec = 0;
+  time.it_value.tv_usec = 100000;
+
+  signal(SIGVTALRM, signal_handler);
+
+  setitimer(ITIMER_VIRTUAL, &time, NULL);
+
+  while(1)
+    /* spin */;
+
+  return 0;
+
+}
+
+void print()
+{
+    printf("HI\n");
+}
