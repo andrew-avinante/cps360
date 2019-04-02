@@ -1,0 +1,118 @@
+Mapping:
+
+00000160  42 f7 9e 0a 1d eb 95 4f  ca 39 96 c1 da b2 d7 68  |B......O.9.....h|
+00000170  6e 56 ce 41 6d 66 9b 89  48 9c f1 24 74 5f 3b 11  |nV.Amf..H..$t_;.|
+00000180  85 a0 06 a8 4c 0d ff 15  b6 9c b0 46 65 a1 9f 52  |....L......Fe..R|
+
+00000000  52 9f a1 65 46 b0 9c b6  15 ff 0d 4c a8 06 a0 85  |R..eF......L....|
+00000010  11 3b 5f 74 24 f1 9c 48  89 9b 66 6d 41 ce 56 6e  |.;_t$..H..fmA.Vn|
+00000020  68 d7 b2 da c1 96 39 ca  4f 95 eb 1d 0a 9e f7 42  |h.....9.O......B|
+
+Andrews-Macbook-Pro:Prog5 Andrew$ dd if=/dev/urandom of=original.dat bs=100 count=4
+4+0 records in
+4+0 records out
+400 bytes transferred in 0.000165 secs (2424453 bytes/sec)
+Andrews-Macbook-Pro:Prog5 Andrew$ cp original.dat copy.dat
+Andrews-Macbook-Pro:Prog5 Andrew$ ./reversemm copy.dat
+Andrews-Macbook-Pro:Prog5 Andrew$ ./reversemm copy.dat
+Andrews-Macbook-Pro:Prog5 Andrew$ diff original.dat copy.dat
+Andrews-Macbook-Pro:Prog5 Andrew$ 
+
+Reversecio:
+
+00000160  ab 82 c2 6c 1a 47 f0 ee  a8 a5 7e cb 18 0a 65 2a  |...l.G....~...e*|
+00000170  ff 57 61 ef b4 ae 9a 42  65 ae 13 0e 92 c7 c2 58  |.Wa....Be......X|
+00000180  22 51 6b b0 6c 82 ed 3f  d6 c6 db 55 fd 55 57 7e  |"Qk.l..?...U.UW~|
+
+00000000  7e 57 55 fd 55 db c6 d6  3f ed 82 6c b0 6b 51 22  |~WU.U...?..l.kQ"|
+00000010  58 c2 c7 92 0e 13 ae 65  42 9a ae b4 ef 61 57 ff  |X......eB....aW.|
+00000020  2a 65 0a 18 cb 7e a5 a8  ee f0 47 1a 6c c2 82 ab  |*e...~....G.l...|
+
+Andrews-Macbook-Pro:Prog5 Andrew$ dd if=/dev/urandom of=original.dat bs=100 count=4
+4+0 records in
+4+0 records out
+400 bytes transferred in 0.000093 secs (4301850 bytes/sec)
+Andrews-Macbook-Pro:Prog5 Andrew$ cp original.dat copy.dat
+Andrews-Macbook-Pro:Prog5 Andrew$ ./reversecio copy.dat
+Andrews-Macbook-Pro:Prog5 Andrew$ ./reversecio copy.dat
+Andrews-Macbook-Pro:Prog5 Andrew$ diff original.dat copy.dat
+Andrews-Macbook-Pro:Prog5 Andrew$ 
+
+Reverseciov2:
+
+00000160  11 cf e6 54 d2 e5 ff df  10 e5 bd 45 de 8c 74 2e  |...T.......E..t.|
+00000170  6d 45 3b f6 5f df 3f 99  2a c1 fb 51 30 b7 5a 33  |mE;._.?.*..Q0.Z3|
+00000180  a8 ce 24 fd 08 6a f5 67  51 42 7b 1d b0 da 5c f4  |..$..j.gQB{...\.|
+
+00000000  f4 5c da b0 1d 7b 42 51  67 f5 6a 08 fd 24 ce a8  |.\...{BQg.j..$..|
+00000010  33 5a b7 30 51 fb c1 2a  99 3f df 5f f6 3b 45 6d  |3Z.0Q..*.?._.;Em|
+00000020  2e 74 8c de 45 bd e5 10  df ff e5 d2 54 e6 cf 11  |.t..E.......T...|
+
+Andrews-Macbook-Pro:Prog5 Andrew$ dd if=/dev/urandom of=original.dat bs=100 count=4
+4+0 records in
+4+0 records out
+400 bytes transferred in 0.000104 secs (3847985 bytes/sec)
+Andrews-Macbook-Pro:Prog5 Andrew$ cp original.dat copy.dat
+Andrews-Macbook-Pro:Prog5 Andrew$ ./reverseciov2 copy.dat
+Andrews-Macbook-Pro:Prog5 Andrew$ ./reverseciov2 copy.dat
+Andrews-Macbook-Pro:Prog5 Andrew$ diff original.dat copy.dat
+Andrews-Macbook-Pro:Prog5 Andrew$ 
+
+Andrews-Macbook-Pro:Prog5 Andrew$ time ./reverseciov2 2gb.dat
+
+real	0m57.867s
+user	0m6.173s
+sys	0m24.407s
+
+
+
+REVERSEMM vs REVERSECIO vs REVERSECIOV2:
+Andrews-Macbook-Pro:Prog5 Andrew$ time ./reversemm 500mb.dat
+
+real	0m4.550s
+user	0m1.491s
+sys	0m0.698s
+Andrews-Macbook-Pro:Prog5 Andrew$ time ./reversemm 500mb.dat
+
+real	0m2.253s
+user	0m1.332s
+sys	0m0.175s
+Andrews-Macbook-Pro:Prog5 Andrew$ time ./reversemm 500mb.dat
+
+real	0m2.252s
+user	0m1.390s
+sys	0m0.197s
+
+
+Andrews-Macbook-Pro:Prog5 Andrew$ time ./reversecio 500mb.dat
+
+real	0m5.115s
+user	0m1.743s
+sys	0m2.378s
+Andrews-Macbook-Pro:Prog5 Andrew$ time ./reversecio 500mb.dat
+
+real	0m4.960s
+user	0m1.460s
+sys	0m1.906s
+Andrews-Macbook-Pro:Prog5 Andrew$ time ./reversecio 500mb.dat
+
+real	0m4.515s
+user	0m1.489s
+sys	0m1.916s
+
+
+Andrews-Macbook-Pro:Prog5 Andrew$ time ./reverseciov2 500mb.dat
+
+real	0m3.704s
+user	0m1.058s
+sys	0m1.621s
+Andrews-Macbook-Pro:Prog5 Andrew$ time ./reverseciov2 500mb.dat
+    
+real	0m4.139s
+user	0m1.117s
+sys	0m1.744s
+Andrews-Macbook-Pro:Prog5 Andrew$ time ./reverseciov2 500mb.dat
+
+real	0m4.338s
+user	0m1.082s
+sys	0m1.560s
