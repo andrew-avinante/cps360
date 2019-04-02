@@ -58,61 +58,253 @@ Andrews-Macbook-Pro:Prog5 Andrew$ ./reverseciov2 copy.dat
 Andrews-Macbook-Pro:Prog5 Andrew$ diff original.dat copy.dat
 Andrews-Macbook-Pro:Prog5 Andrew$ 
 
-Andrews-Macbook-Pro:Prog5 Andrew$ time ./reverseciov2 2gb.dat
+aavin894@ubuntu:~/Desktop/cps360/Programs/Prog5$ /usr/bin/time -v ./reverseciov2 2gb.dat
+	Command being timed: "./reverseciov2 2gb.dat"
+	User time (seconds): 5.23
+	System time (seconds): 12.21
+	Percent of CPU this job got: 44%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:38.92
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 2049072
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 3
+	Minor (reclaiming a frame) page faults: 512068
+	Voluntary context switches: 786
+	Involuntary context switches: 114519
+	Swaps: 0
+	File system inputs: 4096672
+	File system outputs: 4096000
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
 
-real	0m57.867s
-user	0m6.173s
-sys	0m24.407s
 
 
 
 REVERSEMM vs REVERSECIO vs REVERSECIOV2:
-Andrews-Macbook-Pro:Prog5 Andrew$ time ./reversemm 500mb.dat
+aavin894@ubuntu:~/Desktop/cps360/Programs/Prog5$ /usr/bin/time -v ./reversemm 500mb.dat
+	Command being timed: "./reversemm 500mb.dat"
+	User time (seconds): 1.05
+	System time (seconds): 0.34
+	Percent of CPU this job got: 82%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:01.70
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 513068
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 136061
+	Voluntary context switches: 1
+	Involuntary context switches: 330
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 1024016
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+aavin894@ubuntu:~/Desktop/cps360/Programs/Prog5$ /usr/bin/time -v ./reversemm 500mb.dat
+	Command being timed: "./reversemm 500mb.dat"
+	User time (seconds): 1.01
+	System time (seconds): 0.39
+	Percent of CPU this job got: 84%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:01.65
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 513012
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 136059
+	Voluntary context switches: 2
+	Involuntary context switches: 305
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 1024000
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+aavin894@ubuntu:~/Desktop/cps360/Programs/Prog5$ /usr/bin/time -v ./reversemm 500mb.dat
+	Command being timed: "./reversemm 500mb.dat"
+	User time (seconds): 1.06
+	System time (seconds): 0.26
+	Percent of CPU this job got: 74%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:01.78
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 513068
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 136060
+	Voluntary context switches: 9
+	Involuntary context switches: 334
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 1024008
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
 
-real	0m4.550s
-user	0m1.491s
-sys	0m0.698s
-Andrews-Macbook-Pro:Prog5 Andrew$ time ./reversemm 500mb.dat
-
-real	0m2.253s
-user	0m1.332s
-sys	0m0.175s
-Andrews-Macbook-Pro:Prog5 Andrew$ time ./reversemm 500mb.dat
-
-real	0m2.252s
-user	0m1.390s
-sys	0m0.197s
 
 
-Andrews-Macbook-Pro:Prog5 Andrew$ time ./reversecio 500mb.dat
+aavin894@ubuntu:~/Desktop/cps360/Programs/Prog5$ /usr/bin/time -v ./reversecio 500mb.dat
+	Command being timed: "./reversecio 500mb.dat"
+	User time (seconds): 1.20
+	System time (seconds): 9.07
+	Percent of CPU this job got: 95%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:10.79
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 513476
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 128060
+	Voluntary context switches: 13
+	Involuntary context switches: 1016
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 1024000
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+aavin894@ubuntu:~/Desktop/cps360/Programs/Prog5$ /usr/bin/time -v ./reversecio 500mb.dat
+	Command being timed: "./reversecio 500mb.dat"
+	User time (seconds): 1.01
+	System time (seconds): 0.44
+	Percent of CPU this job got: 79%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:01.83
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 513472
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 128060
+	Voluntary context switches: 20
+	Involuntary context switches: 199
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 1024000
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+aavin894@ubuntu:~/Desktop/cps360/Programs/Prog5$ /usr/bin/time -v ./reversecio 500mb.dat
+	Command being timed: "./reversecio 500mb.dat"
+	User time (seconds): 0.90
+	System time (seconds): 0.40
+	Percent of CPU this job got: 77%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:01.68
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 513520
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 128060
+	Voluntary context switches: 21
+	Involuntary context switches: 184
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 1024000
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
 
-real	0m5.115s
-user	0m1.743s
-sys	0m2.378s
-Andrews-Macbook-Pro:Prog5 Andrew$ time ./reversecio 500mb.dat
 
-real	0m4.960s
-user	0m1.460s
-sys	0m1.906s
-Andrews-Macbook-Pro:Prog5 Andrew$ time ./reversecio 500mb.dat
-
-real	0m4.515s
-user	0m1.489s
-sys	0m1.916s
-
-
-Andrews-Macbook-Pro:Prog5 Andrew$ time ./reverseciov2 500mb.dat
-
-real	0m3.704s
-user	0m1.058s
-sys	0m1.621s
-Andrews-Macbook-Pro:Prog5 Andrew$ time ./reverseciov2 500mb.dat
-    
-real	0m4.139s
-user	0m1.117s
-sys	0m1.744s
-Andrews-Macbook-Pro:Prog5 Andrew$ time ./reverseciov2 500mb.dat
-
-real	0m4.338s
-user	0m1.082s
-sys	0m1.560s
+aavin894@ubuntu:~/Desktop/cps360/Programs/Prog5$ /usr/bin/time -v ./reverseciov2 500mb.dat
+	Command being timed: "./reverseciov2 500mb.dat"
+	User time (seconds): 1.00
+	System time (seconds): 0.31
+	Percent of CPU this job got: 45%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:02.90
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1480
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 64
+	Voluntary context switches: 1
+	Involuntary context switches: 683
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 1024000
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+aavin894@ubuntu:~/Desktop/cps360/Programs/Prog5$ /usr/bin/time -v ./reverseciov2 500mb.dat
+	Command being timed: "./reverseciov2 500mb.dat"
+	User time (seconds): 1.06
+	System time (seconds): 0.26
+	Percent of CPU this job got: 45%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:02.92
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1476
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 64
+	Voluntary context switches: 1
+	Involuntary context switches: 858
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 1024000
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+aavin894@ubuntu:~/Desktop/cps360/Programs/Prog5$ /usr/bin/time -v ./reverseciov2 500mb.dat
+	Command being timed: "./reverseciov2 500mb.dat"
+	User time (seconds): 1.13
+	System time (seconds): 0.28
+	Percent of CPU this job got: 43%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:03.24
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1404
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 61
+	Voluntary context switches: 2
+	Involuntary context switches: 979
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 1024000
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
