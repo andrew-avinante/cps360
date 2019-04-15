@@ -56,7 +56,11 @@ struct vfile* ramfs_create(char *path, short type, short major, short minor)
 
 void ramfs_stati(struct vfile *vfile, struct stat *st)
 {
-  stati(vfile->fsp, st);
+  st->type = 3;
+  st->dev = 0;
+  st->ino = 0;
+  st->nlink = 0;
+  st->size = sizeof(vfile->fsp);
 }
 
 void ramfs_ilock(struct vfile* vfile)
@@ -77,12 +81,15 @@ void ramfs_iput(struct vfile* vfile)
 int ramfs_writei(struct vfile* vfile, char *src, uint off, uint n)
 {
   struct ram* writeTo = (struct ram*)vfile->fsp;
-  memcpy(writeTo->data+off, src, n);
+  memmove(&writeTo->data[off], src, n);
+  return 0;
 }
 
 int ramfs_readi(struct vfile* vfile, char *src, uint off, uint n)
 {
-  // TODO
+  struct ram* readFrom = (struct ram*)vfile->fsp;
+  memmove(&readFrom->data[off], src, n);
+  return 0;
 }
 
 
