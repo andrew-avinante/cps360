@@ -3,6 +3,11 @@
         "types.h": "c",
         "fcntl.h": "c",
         "user.h": "c",
-        "stat.h": "c"
+        "stat.h": "c",
+        "spinlock.h": "c",
+        "vfs.h": "c",
+        "fs.h": "c",
+        "file.h": "c",
+        "vfs_ramfs.h": "c"
     }
 }
