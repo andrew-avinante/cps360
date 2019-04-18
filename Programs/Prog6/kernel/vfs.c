@@ -55,7 +55,7 @@ vfile_alloc(void *fsp, struct vfs_ops* vo)
       vfs.vfiles[i].vops = vo;
       vfs.vfiles[i].refcount = 1;
       release(&vfs.lock);
-      cprintf("Allocated vfile #%d\n", i);
+     // cprintf("Allocated vfile #%d\n", i);
       return &vfs.vfiles[i];
     }
   }
@@ -119,23 +119,25 @@ vfs_namei(char *path)
   }
   if(isRam)
   {
+    struct ram *ip = NULL;
     // acquire(drive.lock);
       for (int i = 0; i < MAX_RAMFILES; ++i) {
-        struct ram* ip = (struct ram*)vfs.vfiles[i].fsp;
-        cprintf("%s %s\n", ip->fName, path);
-        if(ip->fName == path)
+        ip = (struct ram*)vfs.vfiles[i].fsp;
+        if(namecmp(ip->fName, path) == 0)
         {
-          cprintf("FOUND");
-          vf = &vfs.vfiles[i];
-          vf->refcount++;
+          vf = vfile_lookup(ip);
+          vf = vfile_alloc(ip, &ramfs_vfs_ops);
+          // cprintf("%s\n", (*(struct ram*)(vf->fsp)).fName);
+          // cprintf("AFETER\n");
+          // vf = &vfs.vfiles[i];
           break;
         }
       }
       if(vf == NULL)
+      {
+          cprintf("HERE\n");
         return NULL;
-      // release(drive.lock);
-      vf = vfile_alloc(vf, &ramfs_vfs_ops);
-    
+      }
     }
   else
   {

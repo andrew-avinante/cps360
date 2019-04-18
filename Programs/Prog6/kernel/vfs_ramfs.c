@@ -23,20 +23,18 @@ void raminit(void)
 
 struct vfile* ramfs_create(char *path, short type, short major, short minor)
 {
-  struct ram ip;
   for(int i = 0; i < MAX_RAMFILES; i++)
   {
-    ip = drive.ramFiles[i];
-    if(ip.alloc == 0)
+    if(drive.ramFiles[i].alloc == 0)
     {
-      ip.fName = path;
-      ip.alloc = 1;
-      ip.data = kalloc();
-      drive.ramFiles[i] = ip;
-      break;
+      memmove(drive.ramFiles[i].fName, path, 14);
+      drive.ramFiles[i].alloc = 1;
+      drive.ramFiles[i].data = kalloc();
+      memset(drive.ramFiles[i].data, 0, 4096);
+      return vfile_alloc(&drive.ramFiles[i], &ramfs_vfs_ops);
     }
   }
-  return vfile_alloc(&ip, &ramfs_vfs_ops);
+  return vfile_alloc(NULL, &ramfs_vfs_ops);
 }
 
 void ramfs_stati(struct vfile *vfile, struct stat *st)
@@ -67,17 +65,22 @@ int ramfs_writei(struct vfile* vfile, char *src, uint off, uint n)
 {
  struct ram* writeTo = (struct ram*)vfile->fsp;
   memmove(&writeTo->data[off], src, n);
-  cprintf("TEST: %s\n", writeTo->data);
   return 1;
 }
 
 int ramfs_readi(struct vfile* vfile, char *src, uint off, uint n)
 {
-  struct ram* readFrom = (struct ram*)vfile->fsp;
-  // memmove(&readFrom->data[off], src, n);
-  src = readFrom->data;
+   struct ram* readFrom = (struct ram*)vfile->fsp;
+  memmove(src, &readFrom->data[off], n);
+  if(readFrom->data[off] != 0)
+  {
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
 
-  return 1;
 }
 
 
