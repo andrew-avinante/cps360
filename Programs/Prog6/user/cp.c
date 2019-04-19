@@ -4,13 +4,19 @@
 #include "fcntl.h"
 
 void
-cp(int fds, int fdd, struct stat fileStat)
+cp(int fds, int fdd, struct stat fileStat, char* str)
 {
 
     char buf[1024];
-    while (read(fds, buf, fileStat.size))
+    if(fds != -1){
+        while (read(fds, buf, fileStat.size))
+        {
+            write(fdd, buf, fileStat.size);
+        }
+    }
+    else
     {
-        write(fdd, buf, fileStat.size);
+        write(fdd, str, strlen(str));
     }
 }
 
@@ -38,9 +44,10 @@ main(int argc, char *argv[])
     }
 
     int fds = open(argv[1], O_RDONLY);
-    int fdd = open(argv[2], O_WRONLY);
+    int fdd = open(argv[2], O_WRONLY | O_CREATE);
 
-    cp(fds, fdd, fileStat);
+
+    cp(fds, fdd, fileStat, argv[1]);
 
     exit();
 }

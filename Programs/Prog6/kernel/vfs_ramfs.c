@@ -27,6 +27,7 @@ struct vfile* ramfs_create(char *path, short type, short major, short minor)
   {
     if(drive.ramFiles[i].alloc == 0)
     {
+      cprintf("%d\n", i);
       memmove(drive.ramFiles[i].fName, path, 14);
       drive.ramFiles[i].alloc = 1;
       drive.ramFiles[i].data = kalloc();
