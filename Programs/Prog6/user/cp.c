@@ -30,14 +30,14 @@ main(int argc, char *argv[])
 
     struct stat fileStat;
     stat(argv[2], &fileStat);
-    if(fileStat.type == 1)
+    if(fileStat.type == 1 || fileStat.type == 0)
     {
         printf(0, "Destination may not be a directory.\n");
         exit();
     }
 
     stat(argv[1], &fileStat);
-    if(fileStat.type == 1 || fileStat.type == 0)
+    if(fileStat.type == 1)
     {
         printf(0, "Source may not be a directory.\n");
         exit();
