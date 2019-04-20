@@ -37,7 +37,7 @@ main(int argc, char *argv[])
     }
 
     stat(argv[1], &fileStat);
-    if(fileStat.type == 1)
+    if(fileStat.type == 1 || fileStat.type == 0)
     {
         printf(0, "Source may not be a directory.\n");
         exit();
