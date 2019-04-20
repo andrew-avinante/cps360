@@ -18,7 +18,7 @@ int
 main(int argc, char *argv[])
 {
     if(argc < 2){
-        printf(2, "Usage: cp <source> <destination>\n");
+        printf(0, "Usage: cp <source> <destination>\n");
         exit();
     }
 
