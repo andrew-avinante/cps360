@@ -23,12 +23,10 @@ void raminit(void)
 
 struct vfile* ramfs_create(char *path, short type, short major, short minor)
 {
-  cprintf("HI\n");
   for(int i = 0; i < MAX_RAMFILES; i++)
   {
     if(drive.ramFiles[i].alloc == 0)
     {
-      cprintf("%d\n", i);
       memmove(drive.ramFiles[i].fName, path, 14);
       drive.ramFiles[i].alloc = 1;
       drive.ramFiles[i].data[0] = kalloc();
@@ -71,7 +69,6 @@ int ramfs_writei(struct vfile* vfile, char *src, uint off, uint n)
  if(sizeof(writeTo->data[off / 4096]) == 0)
  {
    writeTo->data[off / 4096] = kalloc();
-   cprintf("WHY YOU IN HERE\n");
  }
   memmove(&writeTo->data[0][off], src, n);
   return 1;
