@@ -32,6 +32,7 @@ main(int argc, char *argv[])
     }
     else if(fileStat.type == 0)
     {
+        printf(1, "%s\n", argv[1]);
         printf(0, "Source file does not exist.\n");
         exit();
     }

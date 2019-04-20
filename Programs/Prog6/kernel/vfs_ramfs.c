@@ -23,6 +23,7 @@ void raminit(void)
 
 struct vfile* ramfs_create(char *path, short type, short major, short minor)
 {
+  cprintf("HI\n");
   for(int i = 0; i < MAX_RAMFILES; i++)
   {
     if(drive.ramFiles[i].alloc == 0)
