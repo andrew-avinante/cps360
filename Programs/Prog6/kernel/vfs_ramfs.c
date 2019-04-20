@@ -67,7 +67,7 @@ void ramfs_iput(struct vfile* vfile)
 int ramfs_writei(struct vfile* vfile, char *src, uint off, uint n)
 {
  struct ram* writeTo = (struct ram*)vfile->fsp;
- if(sizeof(writeTo->data[off / / 4096]) == 0)
+ if(sizeof(writeTo->data[off / 4096]) == 0)
  {
    writeTo->data[off / 4096] = kalloc();
    cprintf("WHY YOU IN HERE\n");
