@@ -53,7 +53,7 @@ vfile_alloc(void *fsp, struct vfs_ops* vo)
     if (vfs.vfiles[i].refcount == 0) {
       vfs.vfiles[i].fsp = fsp;
       vfs.vfiles[i].vops = vo;
-      vfs.vfiles[i].refcount = 2;
+      vfs.vfiles[i].refcount = 1;
       release(&vfs.lock);
       cprintf("Allocated vfile #%d\n", i);
       return &vfs.vfiles[i];
@@ -122,8 +122,8 @@ vfs_namei(char *path)
     struct ram *ip = NULL;
     // acquire(drive.lock);
       for (int i = 0; i < MAX_RAMFILES; ++i) {
-        ip = (struct ram*)vfs.vfiles[i].fsp;
-        // cprintf("%s %d\n", ip->fName, i);
+        ip = &drive.ramFiles[i];
+        // cprintf("FILE NAME: %s | PATH NAME: %s | REF: %d\n", ip->fName, path, vfs.vfiles[i].refcount);
         if(namecmp(ip->fName, path) == 0)
         {
           if (!ip)

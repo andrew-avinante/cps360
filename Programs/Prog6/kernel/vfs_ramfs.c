@@ -30,9 +30,11 @@ struct vfile* ramfs_create(char *path, short type, short major, short minor)
       cprintf("%d\n", i);
       memmove(drive.ramFiles[i].fName, path, 14);
       drive.ramFiles[i].alloc = 1;
-      drive.ramFiles[i].data = kalloc();
-      memset(drive.ramFiles[i].data, 0, 4096);
-      return vfile_alloc(&drive.ramFiles[i], &ramfs_vfs_ops);
+      drive.ramFiles[i].data[0] = kalloc();
+      memset(drive.ramFiles[i].data[0], 0, 1);
+      struct vfile *vf = vfile_alloc(&drive.ramFiles[i], &ramfs_vfs_ops);
+      vf->type = 2;
+      return vf;
     }
   }
   return vfile_alloc(NULL, &ramfs_vfs_ops);
@@ -44,7 +46,7 @@ void ramfs_stati(struct vfile *vfile, struct stat *st)
   st->dev = 0;
   st->ino = 0;
   st->nlink = 0;
-  st->size = sizeof(vfile->fsp);
+  st->size = 1;
 }
 
 void ramfs_ilock(struct vfile* vfile)
@@ -65,15 +67,20 @@ void ramfs_iput(struct vfile* vfile)
 int ramfs_writei(struct vfile* vfile, char *src, uint off, uint n)
 {
  struct ram* writeTo = (struct ram*)vfile->fsp;
-  memmove(&writeTo->data[off], src, n);
+ if(sizeof(writeTo->data[off / / 4096]) == 0)
+ {
+   writeTo->data[off / 4096] = kalloc();
+   cprintf("WHY YOU IN HERE\n");
+ }
+  memmove(&writeTo->data[0][off], src, n);
   return 1;
 }
 
 int ramfs_readi(struct vfile* vfile, char *src, uint off, uint n)
 {
    struct ram* readFrom = (struct ram*)vfile->fsp;
-  memmove(src, &readFrom->data[off], n);
-  if(readFrom->data[off] != 0)
+  memmove(src, &readFrom->data[off / 4096][off], n);
+  if(readFrom->data[off / 4096][off] != 0)
   {
     return 1;
   }

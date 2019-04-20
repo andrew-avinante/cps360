@@ -3,6 +3,7 @@
 
 #define MAX_RAMFILES 20
 #define PATH_SIZE 14
+#define MEMORY_SIZE 64
 
 extern struct vfs_ops ramfs_vfs_ops;
 
@@ -20,7 +21,7 @@ int ramfs_readi(struct vfile*, char *src, uint off, uint n);
 struct ram {
   int alloc;
   char fName[PATH_SIZE];
-  char* data;
+  char* data[MEMORY_SIZE % 4];
 };
 
 
