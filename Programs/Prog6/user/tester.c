@@ -11,7 +11,7 @@
 #include "fcntl.h"
 
 //#define SHELL
-//#define DEBUG
+#define DEBUG
 #define OUTBUF_SIZE 80
 #define RESULTFILE "/tstrslt"
 
@@ -111,7 +111,7 @@ int compare_files(char *file1, char *file2) {
   }
 
   #ifdef DEBUG
-  printf(1, "Comparing %s with %s...\n", file1, file2);
+  printf(2, "Comparing %s with %s...\n", file1, file2);
   #endif
   int c1 = 0, c2 = 0;
   int rc1, rc2;

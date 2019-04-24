@@ -7,10 +7,12 @@ void
 cp(int fds, int fdd, struct stat fileStat, char* str)
 {
 
-    char buf[512];
-    while (read(fds, buf, sizeof(buf)))
+    char buf[1024];
+    int writes = 0;
+    while ((writes = read(fds, buf, sizeof(buf)))!= 0)
     {
-        write(fdd, buf, sizeof(buf));
+        write(fdd, buf, writes);
+        memset(&buf, 0, sizeof(buf));
     }
 }
 
