@@ -20,7 +20,7 @@ int
 main(int argc, char *argv[])
 {
     if(argc < 2){
-        printf(0, "Usage: cp <source> <destination>\n");
+        printf(1, "Usage: cp <source> <destination>\n");
         exit();
     }
 
@@ -29,19 +29,19 @@ main(int argc, char *argv[])
     stat(argv[1], &fileStat);
     if(fileStat.type == 1)
     {
-        printf(0, "Source may not be a directory.\n");
+        printf(1, "Source may not be a directory.\n");
         exit();
     }
     else if(fileStat.type == 0)
     {
-        printf(0, "Source file does not exist.\n");
+        printf(1, "Source file does not exist.\n");
         exit();
     }
 
     stat(argv[2], &fileStat);
     if(fileStat.type == 1 || fileStat.type == 0)
     {
-        printf(0, "Destination may not be a directory.\n");
+        printf(1, "Destination may not be a directory.\n");
         exit();
     }
 
