@@ -32,14 +32,13 @@ main(int argc, char *argv[])
     }
     else if(fileStat.type == 0)
     {
-        printf(0, "Source file does not exist.\n");
+        printf(0, "Source file does not exist.");
         exit();
     }
-    printf(0,"HI\n");
     stat(argv[2], &fileStat);
     if(fileStat.type == 1 || fileStat.type == 0)
     {
-        printf(0, "Destination may not be a directory.\n");
+        printf(0, "Destination may not be a directory.");
         exit();
     }
 
