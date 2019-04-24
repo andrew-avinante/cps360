@@ -83,16 +83,16 @@ int ramfs_writei(struct vfile* vfile, char *src, uint off, uint n)
   writeTo->dataBlocks[off / 4096].alloc = 1;
  }
   memmove(&writeTo->dataBlocks[off / 4096].data[off], src, n);
-  return 1;
+  return n;
 }
 
 int ramfs_readi(struct vfile* vfile, char *src, uint off, uint n)
 {
    struct ram* readFrom = (struct ram*)vfile->fsp;
   memmove(src, &readFrom->dataBlocks[off / 4096].data[off], n);
-  if(readFrom->dataBlocks[off / 4096].data[off] != 0)
+  if(strlen(src) != 0)
   {
-    return 1;
+    return strlen(src);
   }
   else
   {

@@ -15,7 +15,6 @@
 * p [echo to /tmp/e]: ** Doesn't work **
 * cp [grep to /wc]: ** Doesn't work ** 
 * OFFICIAL TEST CASE -> For the last two cp tests, I output the expected output but it says it got '' even though the output is right above the error message
-* OFFICIAL TEST CASE -> For the ram disk, it says that it can't read and write to the RAM disk even though I can through the cmd line
 
 ```
 aavin894@ubuntu:~/Desktop/cps360/Programs/Prog6$ sudo make qemu

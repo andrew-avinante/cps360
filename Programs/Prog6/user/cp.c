@@ -7,10 +7,11 @@ void
 cp(int fds, int fdd, struct stat fileStat, char* str)
 {
 
-    char buf[4096];
-    read(fds, buf, fileStat.size);
-    write(fdd, buf, fileStat.size);
-    
+    char buf[512];
+    while (read(fds, buf, sizeof(buf)))
+    {
+        write(fdd, buf, sizeof(buf));
+    }
 }
 
 int
