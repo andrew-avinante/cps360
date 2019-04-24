@@ -8,10 +8,10 @@ cp(int fds, int fdd, struct stat fileStat, char* str)
 {
 
     char buf[1024];
-    while (read(fds, buf, fileStat.size))
-    {
+    read(fds, buf, fileStat.size);
+    
         write(fdd, buf, fileStat.size);
-    }
+    
 }
 
 int
