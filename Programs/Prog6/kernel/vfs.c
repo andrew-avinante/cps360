@@ -55,7 +55,7 @@ vfile_alloc(void *fsp, struct vfs_ops* vo)
       vfs.vfiles[i].vops = vo;
       vfs.vfiles[i].refcount = 1;
       release(&vfs.lock);
-      // cprintf("Allocated vfile #%d\n", i);
+      cprintf("Allocated vfile #%d\n", i);
       return &vfs.vfiles[i];
     }
   }

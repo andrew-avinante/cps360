@@ -8,10 +8,10 @@ cp(int fds, int fdd, struct stat fileStat, char* str)
 {
 
     char buf[1024];
-    read(fds, buf, fileStat.size);
-    
+    while (read(fds, buf, fileStat.size))
+    {
         write(fdd, buf, fileStat.size);
-    
+    }
 }
 
 int
@@ -32,13 +32,14 @@ main(int argc, char *argv[])
     }
     else if(fileStat.type == 0)
     {
-        printf(0, "Source file does not exist.");
+        printf(0, "Source file does not exist.\n");
         exit();
     }
+
     stat(argv[2], &fileStat);
     if(fileStat.type == 1 || fileStat.type == 0)
     {
-        printf(0, "Destination may not be a directory.");
+        printf(0, "Destination may not be a directory.\n");
         exit();
     }
 

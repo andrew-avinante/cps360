@@ -46,7 +46,16 @@ void ramfs_stati(struct vfile *vfile, struct stat *st)
   st->dev = 0;
   st->ino = 0;
   st->nlink = 0;
-  st->size = 1;
+  int size = 0;
+  struct ram* file = (struct ram*)(vfile->fsp);
+  for(int i = 0; i < 16; i++)
+  {
+    if(file->dataBlocks[i].alloc != 0)
+    {
+      size += strlen(file->dataBlocks[i].data);
+    }
+  }
+  st->size = size;
 }
 
 void ramfs_ilock(struct vfile* vfile)
